@@ -1,22 +1,34 @@
-@extends('layouts.app')
-@section('title','Edit University')
-@section('content')
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>@yield('title','University System')</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
 
-<h1 class="text-2xl font-bold text-pink-700 mb-4">Edit University</h1>
+    {{-- Navbar --}}
+    <nav class="bg-gray-800 text-white px-6 py-4 flex justify-between">
+        <div>
+            <a href="{{ route('universities.index') }}" class="mr-4 hover:underline">Universities</a>
+            <a href="{{ route('faculties.index') }}" class="mr-4 hover:underline">Faculties</a>
+            <a href="{{ route('departments.index') }}" class="hover:underline">Departments</a>
+        </div>
+        <div>
+            <span class="font-bold">University MIS</span>
+        </div>
+    </nav>
 
-<form action="{{ route('universities.update', $university->id) }}" method="POST" class="bg-white p-6 rounded shadow">
-    @csrf
-    @method('PUT')
-    <div class="mb-4">
-        <label class="block mb-1 font-semibold">Name</label>
-        <input type="text" name="name" value="{{ old('name', $university->name) }}" class="w-full border px-3 py-2 rounded" required>
-        @error('name')<p class="text-red-500 mt-1">{{ $message }}</p>@enderror
-    </div>
-    <div class="mb-4">
-        <label class="block mb-1 font-semibold">Location</label>
-        <input type="text" name="location" value="{{ old('location', $university->location) }}" class="w-full border px-3 py-2 rounded">
-    </div>
-    <button type="submit" class="bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-600">Update</button>
-</form>
+    {{-- Content --}}
+    <main class="container mx-auto mt-6 px-6">
+        @if(session('success'))
+            <div class="bg-green-100 text-green-700 px-4 py-2 rounded mb-4">
+                {{ session('success') }}
+            </div>
+        @endif
 
-@endsection
+        @yield('content')
+    </main>
+
+</body>
+</html>

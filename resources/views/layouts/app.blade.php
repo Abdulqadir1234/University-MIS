@@ -1,27 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>@yield('title','University System')</title>
+    <meta charset="UTF-8">
+    <title>@yield('title','University MIS')</title>
 
-<script src="https://cdn.tailwindcss.com"></script>
+    {{-- Tailwind CSS --}}
+    {{-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    {{-- Alpine.js locally --}}
+    <script src="{{ asset('js/alpine.min.js') }}" defer></script>
+    
 </head>
-<body class="bg-gradient-to-r from-purple-100 via-pink-100 to-yellow-100 font-sans">
-<div class="container mx-auto p-4">
 
-    <nav class="mb-6 flex gap-4 bg-white p-4 rounded shadow">
-        <a href="{{ route('dashboard') }}" class="text-purple-700 font-semibold">Dashboard</a>
-        <a href="{{ route('universities.index') }}" class="text-pink-700 font-semibold">Universities</a>
-        <a href="{{ route('departments.index') }}" class="text-green-700 font-semibold">Departments</a>
-        <a href="{{ route('faculties.index') }}" class="text-blue-700 font-semibold">Faculties</a>
-    </nav>
+<body class="bg-gray-100 min-h-screen flex">
 
-    @if(session('success'))
-        <div class="bg-green-300 p-2 mb-4 rounded">{{ session('success') }}</div>
-    @endif
+    {{-- Sidebar --}}
+    <aside class="w-64 bg-gray-800 text-white min-h-screen">
+        <div class="p-6 text-xl font-bold border-b border-gray-700">
+            University MIS
+        </div>
+        <nav class="mt-6">
+            <a href="{{ route('dashboard') }}" class="block px-6 py-3 hover:bg-gray-700">Dashboard</a>
+            <a href="{{ route('universities.index') }}" class="block px-6 py-3 hover:bg-gray-700">Universities</a>
+            <a href="{{ route('faculties.index') }}" class="block px-6 py-3 hover:bg-gray-700">Faculties</a>
+            <a href="{{ route('departments.index') }}" class="block px-6 py-3 hover:bg-gray-700">Departments</a>
+        </nav>
+    </aside>
 
-    @yield('content')
-</div>
+    {{-- Main Content --}}
+    <main class="flex-1 p-6">
+        @if(session('success'))
+            <div class="bg-green-100 text-green-700 px-4 py-2 rounded mb-4">
+                {{ session('success') }}
+            </div>
+        @endif
+        @yield('content')
+    </main>
+
 </body>
 </html>

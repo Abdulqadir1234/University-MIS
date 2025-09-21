@@ -2,29 +2,33 @@
 @section('title','Edit Department')
 @section('content')
 
-<h1 class="text-2xl font-bold text-green-700 mb-4">Edit Department</h1>
+<h1 class="text-2xl font-bold mb-4">Edit Department</h1>
 
-<form action="{{ route('departments.update', $department->id) }}" method="POST" class="bg-white p-6 rounded shadow">
-    @csrf
-    @method('PUT')
+<form action="{{ route('departments.update',$department) }}" method="POST" class="bg-white p-6 rounded shadow">
+    @csrf @method('PUT')
     <div class="mb-4">
-        <label class="block mb-1 font-semibold">Name</label>
-        <input type="text" name="name" value="{{ old('name', $department->name) }}" class="w-full border px-3 py-2 rounded" required>
-        @error('name')<p class="text-red-500 mt-1">{{ $message }}</p>@enderror
+        <label class="block font-semibold">Name</label>
+        <input type="text" name="name" value="{{ $department->name }}" class="w-full border px-3 py-2 rounded" required>
     </div>
 
     <div class="mb-4">
-        <label class="block mb-1 font-semibold">University</label>
+        <label class="block font-semibold">University</label>
         <select name="university_id" class="w-full border px-3 py-2 rounded" required>
-            <option value="">Select University</option>
-            @foreach($universities as $university)
-                <option value="{{ $university->id }}" {{ (old('university_id', $department->university_id) == $university->id) ? 'selected' : '' }}>{{ $university->name }}</option>
+            @foreach($universities as $uni)
+                <option value="{{ $uni->id }}" @if($department->university_id==$uni->id) selected @endif>{{ $uni->name }}</option>
             @endforeach
         </select>
-        @error('university_id')<p class="text-red-500 mt-1">{{ $message }}</p>@enderror
     </div>
 
-    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Update</button>
-</form>
+    <div class="mb-4">
+        <label class="block font-semibold">Faculty</label>
+        <select name="faculty_id" class="w-full border px-3 py-2 rounded" required>
+            @foreach($faculties as $fac)
+                <option value="{{ $fac->id }}" @if($department->faculty_id==$fac->id) selected @endif>{{ $fac->name }}</option>
+            @endforeach
+        </select>
+    </div>
 
+    <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Update</button>
+</form>
 @endsection

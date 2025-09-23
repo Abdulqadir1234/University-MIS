@@ -6,25 +6,16 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
-        Schema::create('departments', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
+      Schema::create('departments', function (Blueprint $table) {
+    $table->id();
+    $table->string('name');
+    $table->foreignId('university_id')->constrained()->cascadeOnDelete();
+    $table->foreignId('faculty_id')->constrained()->cascadeOnDelete();
+    $table->timestamps();
+});
 
-            // FK -> University
-            $table->unsignedBigInteger('university_id');
-            $table->foreign('university_id')
-                  ->references('id')->on('universities')
-                  ->onDelete('cascade');
-
-            // FK -> Faculty
-            $table->unsignedBigInteger('faculty_id');
-            $table->foreign('faculty_id')
-                  ->references('id')->on('faculties')
-                  ->onDelete('cascade');
-
-            $table->timestamps();
-        });
     }
+
     public function down(): void {
         Schema::dropIfExists('departments');
     }

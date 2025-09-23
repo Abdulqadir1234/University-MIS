@@ -1,38 +1,72 @@
-@extends('layout.app')
+<x-app-layout>
+    <x-slot name="header">
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                {{ __('Dashboard') }}
+            </h2>
+            <div class="space-x-2">
+                @auth
+                    <form method="POST" action="{{ route('logout') }}" class="inline">
+                        @csrf
+                        <button type="submit"
+                            class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded">
+                            Logout
+                        </button>
+                    </form>
+                @endauth
+            </div>
+        </div>
+    </x-slot>
 
-@section('content')
-<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-    <!-- Universities Card -->
-    <div class="bg-gradient-to-r from-gray-800 to-gray-900 text-white p-6 rounded-2xl shadow-2xl transform hover:scale-105 transition duration-300 relative overflow-hidden">
-        <!-- Book Icon -->
-        <svg class="w-16 h-16 absolute top-4 right-4 opacity-20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2m4 6H4a2 2 0 01-2-2V6a2 2 0 012-2h16a2 2 0 012 2v12a2 2 0 01-2 2z"/>
-        </svg>
-        <h2 class="text-xl font-bold mb-2">Universities</h2>
-        <p class="text-4xl font-extrabold">{{ \App\Models\University::count() }}</p>
-        <a href="{{ route('universities.index') }}" class="mt-4 inline-block bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold shadow hover:bg-indigo-700 transition">View All</a>
-    </div>
+    <div class="py-12">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-    <!-- Faculties Card -->
-    <div class="bg-gradient-to-r from-gray-700 to-gray-800 text-white p-6 rounded-2xl shadow-2xl transform hover:scale-105 transition duration-300 relative overflow-hidden">
-        <!-- Book Icon -->
-        <svg class="w-16 h-16 absolute top-4 right-4 opacity-20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2m4 6H4a2 2 0 01-2-2V6a2 2 0 012-2h16a2 2 0 012 2v12a2 2 0 01-2 2z"/>
-        </svg>
-        <h2 class="text-xl font-bold mb-2">Faculties</h2>
-        <p class="text-4xl font-extrabold">{{ \App\Models\Faculty::count() }}</p>
-        <a href="{{ route('faculties.index') }}" class="mt-4 inline-block bg-green-600 text-white px-4 py-2 rounded-lg font-semibold shadow hover:bg-green-700 transition">View All</a>
-    </div>
+            <!-- Welcome message with role -->
+            @auth
+                <div class="bg-white dark:bg-gray-900 overflow-hidden shadow-sm sm:rounded-lg p-6 mb-6 text-gray-900 dark:text-gray-100">
+                    @php
+                        $role = auth()->user()->getRoleNames()->first() ?? 'no role';
+                    @endphp
+                    <p class="text-lg font-medium">
+                        You're logged in as <span class="font-bold text-blue-500">{{ $role }}</span>.
+                    </p>
+                </div>
+            @endauth
 
-    <!-- Departments Card -->
-    <div class="bg-gradient-to-r from-gray-600 to-gray-700 text-white p-6 rounded-2xl shadow-2xl transform hover:scale-105 transition duration-300 relative overflow-hidden">
-        <!-- Book Icon -->
-        <svg class="w-16 h-16 absolute top-4 right-4 opacity-20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2m4 6H4a2 2 0 01-2-2V6a2 2 0 012-2h16a2 2 0 012 2v12a2 2 0 01-2 2z"/>
-        </svg>
-        <h2 class="text-xl font-bold mb-2">Departments</h2>
-        <p class="text-4xl font-extrabold">{{ \App\Models\Department::count() }}</p>
-        <a href="{{ route('departments.index') }}" class="mt-4 inline-block bg-pink-600 text-white px-4 py-2 rounded-lg font-semibold shadow hover:bg-pink-700 transition">View All</a>
+            <!-- Stats cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                @auth
+                    <div class="bg-gray-800 dark:bg-gray-700 text-white p-6 rounded shadow hover:shadow-lg transition duration-300">
+                        <h2 class="text-xl font-bold mb-2">Universities</h2>
+                        <p class="text-3xl">{{ \App\Models\University::count() }}</p>
+                        <a href="{{ route('universities.index') }}" class="text-blue-400 mt-2 inline-block hover:underline">View All</a>
+                    </div>
+                    <div class="bg-gray-800 dark:bg-gray-700 text-white p-6 rounded shadow hover:shadow-lg transition duration-300">
+                        <h2 class="text-xl font-bold mb-2">Faculties</h2>
+                        <p class="text-3xl">{{ \App\Models\Faculty::count() }}</p>
+                        <a href="{{ route('faculties.index') }}" class="text-blue-400 mt-2 inline-block hover:underline">View All</a>
+                    </div>
+                    <div class="bg-gray-800 dark:bg-gray-700 text-white p-6 rounded shadow hover:shadow-lg transition duration-300">
+                        <h2 class="text-xl font-bold mb-2">Departments</h2>
+                        <p class="text-3xl">{{ \App\Models\Department::count() }}</p>
+                        <a href="{{ route('departments.index') }}" class="text-blue-400 mt-2 inline-block hover:underline">View All</a>
+                    </div>
+                @endauth
+            </div>
+
+            <!-- Optional role-specific message -->
+            @auth
+                @role('admin')
+                    <div class="bg-green-100 text-green-800 p-4 rounded shadow-sm">
+                        Welcome Admin! You can manage universities, faculties, and departments.
+                    </div>
+                @else
+                    <div class="bg-yellow-100 text-yellow-800 p-4 rounded shadow-sm">
+                        You are logged in as <strong>{{ $role }}</strong>. You have limited access.
+                    </div>
+                @endrole
+            @endauth
+
+        </div>
     </div>
-</div>
-@endsection
+</x-app-layout>

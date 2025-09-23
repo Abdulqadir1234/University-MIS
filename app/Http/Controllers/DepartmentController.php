@@ -8,17 +8,30 @@ use Illuminate\Http\Request;
 
 class DepartmentController extends Controller
 {
-    // Show departments with pagination, newest first
-    public function index() {
+    // Show departments with pagination, newest first, plus search
+    public function index(Request $request) {
+        $search = $request->input('search');
+
         $departments = Department::with(['university','faculty'])
+            ->when($search, function ($query, $search) {
+                $query->where('name', 'like', "%{$search}%")
+                      ->orWhereHas('university', function ($q) use ($search) {
+                          $q->where('name', 'like', "%{$search}%");
+                      })
+                      ->orWhereHas('faculty', function ($q) use ($search) {
+                          $q->where('name', 'like', "%{$search}%");
+                      });
+            })
             ->orderBy('id', 'desc')   // newest first
-            ->paginate(10);           // 10 per page
-        return view('departments.index', compact('departments'));
+            ->paginate(10)            // 10 per page
+            ->appends(['search' => $search]);
+
+        return view('departments.index', compact('departments', 'search'));
     }
 
     public function create() {
         $universities = University::all();
-        $faculties = Faculty::orderBy('id', 'desc')->get(); // newest first
+        $faculties = Faculty::orderBy('id', 'desc')->get();
         return view('departments.create', compact('universities','faculties'));
     }
 
@@ -34,7 +47,7 @@ class DepartmentController extends Controller
 
     public function edit(Department $department) {
         $universities = University::all();
-        $faculties = Faculty::orderBy('id', 'desc')->get(); // newest first
+        $faculties = Faculty::orderBy('id', 'desc')->get();
         return view('departments.edit', compact('department','universities','faculties'));
     }
 

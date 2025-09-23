@@ -6,11 +6,19 @@ use Illuminate\Http\Request;
 
 class UniversityController extends Controller
 {
-    // Show universities with pagination, newest first
-    public function index() {
-        $universities = University::orderBy('id', 'desc') // newest first
-            ->paginate(10); // 10 per page
-        return view('universities.index', compact('universities'));
+    // Show universities with search + pagination
+    public function index(Request $request) {
+        $search = $request->input('search');
+
+        $universities = University::when($search, function ($query, $search) {
+                return $query->where('name', 'like', "%{$search}%")
+                             ->orWhere('location', 'like', "%{$search}%");
+            })
+            ->orderBy('id', 'desc') // newest first
+            ->paginate(10)
+            ->appends(['search' => $search]); // keep search in pagination links
+
+        return view('universities.index', compact('universities', 'search'));
     }
 
     public function create() { 

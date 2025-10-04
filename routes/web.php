@@ -20,7 +20,7 @@ Route::middleware(['auth'])->group(function () {
     // Profile routes
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show'); // profile view
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit'); // profile edit
-    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update'); // update
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update'); // update
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy'); // delete
 
     // University system routes

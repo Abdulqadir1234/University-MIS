@@ -5,28 +5,61 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UniversityController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\DepartmentController;
+use Illuminate\Support\Facades\Session;
+use App\Http\Controllers\CourseController;
 
+/*
+|--------------------------------------------------------------------------
+| Localization Route
+|--------------------------------------------------------------------------
+| This route switches the language between English and Persian.
+| It sets the locale in session and reloads the previous page.
+*/
+Route::get('/lang/{locale}', function ($locale) {
+    if (in_array($locale, ['en','fa'])) {
+        session(['locale' => $locale]);
+        app()->setLocale($locale);
+    }
+    return redirect()->back();
+})->name('lang.switch');
+
+/*
+|--------------------------------------------------------------------------
+| Public Routes
+|--------------------------------------------------------------------------
+*/
 Route::get('/', function () {
-    return view('dashboard');
+    return redirect()->route('dashboard');
 });
 
-// Dashboard route (protected)
+/*
+|--------------------------------------------------------------------------
+| Dashboard Route
+|--------------------------------------------------------------------------
+*/
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Authenticated routes group
+/*
+|--------------------------------------------------------------------------
+| Authenticated Routes
+|--------------------------------------------------------------------------
+*/
 Route::middleware(['auth'])->group(function () {
-    // Profile routes
-    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show'); // profile view
-    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit'); // profile edit
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update'); // update
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy'); // delete
 
-    // University system routes
+    // Profile Routes
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // University System Resource Routes
     Route::resource('universities', UniversityController::class);
     Route::resource('faculties', FacultyController::class);
     Route::resource('departments', DepartmentController::class);
+    Route::resource('courses', CourseController::class);
 });
 
+// Authentication routes provided by Breeze or Fortify
 require __DIR__.'/auth.php';

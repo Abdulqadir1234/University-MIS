@@ -50,4 +50,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function courses()
+{
+    return $this->belongsToMany(\App\Models\Course::class);
+}
+
 }

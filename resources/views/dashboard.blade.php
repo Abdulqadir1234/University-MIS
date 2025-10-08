@@ -24,16 +24,12 @@
             @role('admin')
             <li><a href="{{ route('universities.index') }}" class="block p-2 rounded hover:bg-gray-700" x-text="isRtl ? 'دانشگاه‌ها' : 'Universities'"></a></li>
             @endrole
-
             @role('admin|teacher')
             <li><a href="{{ route('faculties.index') }}" class="block p-2 rounded hover:bg-gray-700" x-text="isRtl ? 'دانشکده‌ها' : 'Faculties'"></a></li>
             @endrole
-
             @role('admin|teacher|student')
             <li><a href="{{ route('departments.index') }}" class="block p-2 rounded hover:bg-gray-700" x-text="isRtl ? 'دپارتمان‌ها' : 'Departments'"></a></li>
             @endrole
-
-            <!-- Courses -->
             @role('admin|teacher')
             <li><a href="{{ route('courses.index') }}" class="block p-2 rounded hover:bg-gray-700" x-text="isRtl ? 'کورس‌ها' : 'Courses'"></a></li>
             @endrole
@@ -70,85 +66,44 @@
 
         <!-- Stats cards -->
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-            @role('admin')
-            <div class="bg-indigo-500 text-white p-6 rounded shadow hover:shadow-lg transition duration-300" x-transition:enter="transition transform duration-500" x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100">
+            <div class="bg-indigo-500 text-white p-6 rounded shadow hover:shadow-lg transition duration-300">
                 <h2 class="text-xl font-bold mb-2" x-text="isRtl ? 'دانشگاه‌ها' : 'Universities'"></h2>
                 <p class="text-3xl">{{ \App\Models\University::count() }}</p>
                 <a href="{{ route('universities.index') }}" class="text-blue-200 mt-2 inline-block hover:underline" x-text="isRtl ? 'مشاهده همه' : 'View All'"></a>
             </div>
-            @endrole
-
-            @role('admin|teacher')
-            <div class="bg-green-500 text-white p-6 rounded shadow hover:shadow-lg transition duration-300" x-transition:enter="transition transform duration-500 delay-100" x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100">
+            <div class="bg-green-500 text-white p-6 rounded shadow hover:shadow-lg transition duration-300">
                 <h2 class="text-xl font-bold mb-2" x-text="isRtl ? 'دانشکده‌ها' : 'Faculties'"></h2>
                 <p class="text-3xl">{{ \App\Models\Faculty::count() }}</p>
                 <a href="{{ route('faculties.index') }}" class="text-blue-200 mt-2 inline-block hover:underline" x-text="isRtl ? 'مشاهده همه' : 'View All'"></a>
             </div>
-            @endrole
-
-            @role('admin|teacher|student')
-            <div class="bg-yellow-500 text-white p-6 rounded shadow hover:shadow-lg transition duration-300" x-transition:enter="transition transform duration-500 delay-200" x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100">
+            <div class="bg-yellow-500 text-white p-6 rounded shadow hover:shadow-lg transition duration-300">
                 <h2 class="text-xl font-bold mb-2" x-text="isRtl ? 'دپارتمان‌ها' : 'Departments'"></h2>
                 <p class="text-3xl">{{ \App\Models\Department::count() }}</p>
                 <a href="{{ route('departments.index') }}" class="text-blue-200 mt-2 inline-block hover:underline" x-text="isRtl ? 'مشاهده همه' : 'View All'"></a>
             </div>
-            @endrole
-
-            @role('admin|teacher')
-            <div class="bg-purple-500 text-white p-6 rounded shadow hover:shadow-lg transition duration-300" x-transition:enter="transition transform duration-500 delay-300" x-transition:enter-start="opacity-0 scale-90" x-transition:enter-end="opacity-100 scale-100">
+            <div class="bg-purple-500 text-white p-6 rounded shadow hover:shadow-lg transition duration-300">
                 <h2 class="text-xl font-bold mb-2" x-text="isRtl ? 'کورس‌ها' : 'Courses'"></h2>
                 <p class="text-3xl">{{ \App\Models\Course::count() }}</p>
                 <a href="{{ route('courses.index') }}" class="text-blue-200 mt-2 inline-block hover:underline" x-text="isRtl ? 'مشاهده همه' : 'View All'"></a>
             </div>
-            @endrole
         </div>
 
-        <!-- Latest Courses Table -->
-        @role('admin|teacher')
-        <div class="bg-white dark:bg-gray-800 p-6 rounded shadow"
-             x-transition:enter="transition ease-out duration-500"
-             x-transition:enter-start="opacity-0 translate-y-4"
-             x-transition:enter-end="opacity-100 translate-y-0">
-            <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100 mb-4" x-text="isRtl ? 'آخرین کورس‌ها با اساتید' : 'Latest Courses'"></h2>
-            <table class="min-w-full border-collapse">
-                <thead class="bg-gray-100 dark:bg-gray-700">
-                    <tr class="text-left text-gray-600 dark:text-gray-200 uppercase text-sm">
-                        <th class="p-3">Code</th>
-                        <th class="p-3">Name</th>
-                        <th class="p-3">Faculty</th>
-                        <th class="p-3">Department</th>
-                        <th class="p-3">Teachers</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach(\App\Models\Course::with(['faculty','department','teachers'])->latest()->take(5)->get() as $course)
-                    <tr class="border-b hover:bg-gray-50 dark:hover:bg-gray-700 transition">
-                        <td class="p-3">{{ $course->code }}</td>
-                        <td class="p-3">{{ $course->name }}</td>
-                        <td class="p-3">{{ $course->faculty->name ?? '-' }}</td>
-                        <td class="p-3">{{ $course->department->name ?? '-' }}</td>
-                        <td class="p-3">{{ $course->teachers->pluck('name')->join(', ') ?: '-' }}</td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
-            <div class="mt-3 text-right">
-                <a href="{{ route('courses.index') }}" class="text-blue-600 hover:underline" x-text="isRtl ? 'مشاهده همه کورس‌ها' : 'View All Courses'"></a>
+        <!-- Charts -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded shadow h-96">
+                <h2 class="text-xl font-bold mb-4" x-text="isRtl ? 'Courses per Faculty' : 'Courses per Faculty'"></h2>
+                <canvas id="coursesChart" class="w-full h-80"></canvas>
+            </div>
+            <div class="bg-white dark:bg-gray-800 p-6 rounded shadow h-96">
+                <h2 class="text-xl font-bold mb-4" x-text="isRtl ? 'Departments per University' : 'Departments per University'"></h2>
+                <canvas id="departmentsChart" class="w-full h-80"></canvas>
             </div>
         </div>
-        @endrole
+
     </div>
 
-    <!-- Profile Modal (unchanged, transitions included) -->
-    <div x-show="showProfileModal" 
-         x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="opacity-0 scale-90"
-         x-transition:enter-end="opacity-100 scale-100"
-         x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100 scale-100"
-         x-transition:leave-end="opacity-0 scale-90"
-         class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" 
-         x-cloak>
+    <!-- Profile Modal -->
+    <div x-show="showProfileModal" x-transition class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" x-cloak>
         <div class="bg-white dark:bg-gray-900 rounded-lg p-6 w-96 relative">
             <button @click="showProfileModal = false" class="absolute top-2 right-2 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
             <div class="flex flex-col items-center mb-4">
@@ -156,28 +111,56 @@
                 <h2 class="text-xl font-bold">{{ $user->name }} {{ $user->lastname ?? '' }}</h2>
                 <p class="text-gray-500">{{ $user->getRoleNames()->first() ?? 'No Role' }}</p>
             </div>
-            <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="space-y-4">
-                @csrf
-                @method('PATCH')
-                <div>
-                    <label class="block text-gray-700 dark:text-gray-200">Name</label>
-                    <input type="text" name="name" value="{{ $user->name }}" class="w-full px-3 py-2 rounded border">
-                </div>
-                <div>
-                    <label class="block text-gray-700 dark:text-gray-200">Lastname</label>
-                    <input type="text" name="lastname" value="{{ $user->lastname ?? '' }}" class="w-full px-3 py-2 rounded border">
-                </div>
-                <div>
-                    <label class="block text-gray-700 dark:text-gray-200">Profile Photo</label>
-                    <input type="file" name="profile_photo" class="w-full px-3 py-2 rounded border">
-                </div>
-                <div class="flex justify-between">
-                    <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded">Update</button>
-                    <button type="button" @click="showProfileModal = false" class="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded">Cancel</button>
-                </div>
-            </form>
         </div>
     </div>
 
 </div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Courses per Faculty
+    const coursesData = @json(\App\Models\Faculty::all()->map(fn($f) => [
+        'name' => $f->name,
+        'count' => \App\Models\Course::where('faculty_id', $f->id)->count()
+    ]));
+    const ctx1 = document.getElementById('coursesChart').getContext('2d');
+    new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            labels: coursesData.map(d => d.name),
+            datasets: [{
+                label: 'Courses',
+                data: coursesData.map(d => d.count),
+                backgroundColor: 'rgba(99, 102, 241, 0.7)',
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+
+    // Departments per University
+    const deptData = @json(\App\Models\University::all()->map(fn($u) => [
+        'name' => $u->name,
+        'count' => \App\Models\Department::where('university_id', $u->id)->count()
+    ]));
+    const ctx2 = document.getElementById('departmentsChart').getContext('2d');
+    new Chart(ctx2, {
+        type: 'bar',
+        data: {
+            labels: deptData.map(d => d.name),
+            datasets: [{
+                label: 'Departments',
+                data: deptData.map(d => d.count),
+                backgroundColor: 'rgba(16, 185, 129, 0.7)',
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false
+        }
+    });
+</script>
 </x-app-layout>
